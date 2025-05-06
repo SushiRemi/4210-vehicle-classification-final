@@ -94,12 +94,16 @@ for instance in testdb:
          row.append(4)
       elif (feature == "unacc"):
          trueNumUNACC += 1
+         testY.append(0)
       elif (feature == "acc"):
          trueNumACC += 1
+         testY.append(1)
       elif (feature == "good"):
          trueNumGOOD += 1
+         testY.append(2)
       elif (feature == "vgood"):
          trueNumVGOOD += 1
+         testY.append(3)
    testX.append(row)
 
 
@@ -123,6 +127,8 @@ numGOOD = 0
 numVGOOD = 0
 numSorted = 0
 
+numCorrect = 0
+
 for instance in range(len(testX)):
    # print(testX[instance])
    probability = clf.predict_proba([testX[instance]])[0]
@@ -132,6 +138,8 @@ for instance in range(len(testX)):
    if(probability[0] >= 0.75): #Valid "unacc" class
       numUNACC += 1
       numSorted += 1
+      if(testY[instance] == 0):
+         numCorrect += 1
       output = ""
       for feature in range(0, (len(testdb[instance]) - 1 )):
          output += testdb[instance][feature]
@@ -144,6 +152,8 @@ for instance in range(len(testX)):
    elif(probability[1] >= 0.75): #Valid "acc" class
       numACC += 1
       numSorted += 1
+      if(testY[instance] == 1):
+         numCorrect += 1
       output = ""
       for feature in range(0, (len(testdb[instance]) - 1 )):
          output += testdb[instance][feature]
@@ -156,6 +166,8 @@ for instance in range(len(testX)):
    elif(probability[2] >= 0.75): #Valid "good" class
       numGOOD += 1
       numSorted += 1
+      if(testY[instance] == 2):
+         numCorrect += 1
       output = ""
       for feature in range(0, (len(testdb[instance]) - 1 )):
          output += testdb[instance][feature]
@@ -168,6 +180,8 @@ for instance in range(len(testX)):
    elif(probability[3] >= 0.75): #Valid "vgood" class
       numVGOOD += 1
       numSorted += 1
+      if(testY[instance] == 3):
+         numCorrect += 1
       output = ""
       for feature in range(0, (len(testdb[instance]) - 1 )):
          output += testdb[instance][feature]
@@ -178,8 +192,12 @@ for instance in range(len(testX)):
       output += str(probability[3])
       print(output)
       
+accuracy = numCorrect/numSorted
+
 print("Successfully sorted", numSorted, "out of", len(testX), "instances with 75 percent or greater confidence.")
 print("Total Predicted Unacceptable (unacc):", numUNACC, " ||  Total Actual Unacceptable (unacc):", trueNumUNACC)
 print("Total Predicted Acceptable (acc):", numACC, " ||  Total Predicted Acceptable (acc):", trueNumACC)
 print("Total Predicted Good (good):", numGOOD, " ||  Total Predicted Good (good):", trueNumGOOD)
 print("Total Predicted Very Good (vgood):", numVGOOD, " ||  Total Predicted Very Good (vgood):", trueNumVGOOD)
+print("Correctly predicted", numCorrect, "out of", numSorted, "sorted.")
+print("Model Accuracy:", accuracy)
